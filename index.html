@@ -44,7 +44,7 @@
   </head>
   <body class="text-center bg-black">
     <main class="form-signin w-100 m-auto">
-      <form action="https://www.hibouair.com/" id="loginform">
+      <form action="home.html" id="loginform">
         <img
           class="mb-4"
           src="https://www.hibouair.com/images/logo/logo.png"
@@ -86,16 +86,53 @@
       </form>
     </main>
     <script>
+      if (localStorage.getItem("isLoggedIn") == "true") {
+        window.location.href = "home.html";
+      }
+      
       document.getElementById("loginform").onsubmit = (e) => {
         e.preventDefault();
         let email = document.getElementById("email").value;
         let password = document.getElementById("password").value;
-        if (email == "swetha@ssd.com" && password == "5731") {
-          window.location.href = "https://www.hibouair.com/";
-        } else {
-          console.log("wrong pass");
-          document.getElementById("error").style.display = "block";
-        }
+
+
+        // get one user information
+        // fetch("https://reqres.in/api/users/2")
+        //   .then((x) => {
+        //     return x.json();
+        //   })
+        //   .then((y) => {
+        //     let theData = y.data;
+        //     console.log("email", theData.email);
+        //     console.log("fname", theData.first_name);
+        //   });
+
+
+        fetch("https://reqres.in/api/users")
+          .then((x) => {
+            return x.json();
+          })
+          .then((y) => {
+            let theData = y.data;
+            let theUser = theData.filter(
+              (z) => z.email == email && z.first_name == password
+            );
+            if (theUser.length != 0) {
+              localStorage.setItem("isLoggedIn", "true");
+              localStorage.setItem("userEmail", email);
+              window.location.href = "home.html";
+            } else {
+              document.getElementById("error").style.display = "block";
+            }
+          });
+
+
+        // if (email == "swetha@ssd.com" && password == "5731") {
+        //   window.location.href = "home.html";
+        // } else {
+        //   console.log("wrong pass");
+        //   document.getElementById("error").style.display = "block";
+        // }
       };
     </script>
   </body>
